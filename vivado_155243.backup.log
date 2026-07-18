@@ -1,0 +1,34 @@
+#-----------------------------------------------------------
+# Vivado v2024.2 (64-bit)
+# SW Build 5239630 on Fri Nov 08 22:34:34 MST 2024
+# IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+# SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+# Start of session at: Sun Jul 12 22:11:58 2026
+# Process ID         : 155243
+# Current directory  : /home/sarang/UART_TX_AND_RX
+# Command line       : vivado
+# Log file           : /home/sarang/UART_TX_AND_RX/vivado.log
+# Journal file       : /home/sarang/UART_TX_AND_RX/vivado.jou
+# Running On         : Carax
+# Platform           : Ubuntu
+# Operating System   : Ubuntu 22.04.5 LTS
+# Processor Detail   : 12th Gen Intel(R) Core(TM) i5-1235U
+# CPU Frequency      : 400.398 MHz
+# CPU Physical cores : 10
+# CPU Logical cores  : 12
+# Host memory        : 7996 MB
+# Swap memory        : 2147 MB
+# Total Virtual      : 10143 MB
+# Available Virtual  : 6831 MB
+#-----------------------------------------------------------
+start_gui
+open_project /home/sarang/UART_TX_AND_RX/UART_TX_AND_RX.xpr
+INFO: [filemgmt 56-3] Default IP Output Path : Could not find the directory '/home/sarang/UART_TX_AND_RX/UART_TX_AND_RX.gen/sources_1'.
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository '/home/sarang/vivado-library'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/home/sarang/vivado/Vivado/2024.2/data/ip'.
+update_compile_order -fileset sources_1
+exit
+INFO: [Common 17-206] Exiting Vivado at Sun Jul 12 22:12:55 2026...

@@ -30,83 +30,48 @@ module uart_tx_t(
     output reg busy
     );
     
-    //state declaration
-    localparam [1:0] 
+  localparam [1:0] 
         idle = 2'b00,
         start = 2'b01,
-        data = 2'b11,
-        stop = 2'b10;
+        data = 2'b10,
+        stop = 2'b11;
         
-     //states
-     reg [1:0] present_state, next_state;
-     
-     //counter
-     reg [3:0] counter; //for counting the number of bits transffered
-     
-     wire tx_value = 1;
-     
-     //writing the present_state to next state transition logic
-     always @(posedge clk or posedge rst) begin
-        if (rst) begin
-            present_state <= idle;
-        end else begin
-            present_state <=  next_state; 
+        
+  reg [2:0] bit_counter = 3'b000;
+  reg present_state;
+  reg next_state;
+  
+  always @(posedge clk or posedge rst) begin
+    if (rst) begin
+        present_state <= idle;
+        bit_counter <= 0;
+        tx_enable <= 0;
+    end else begin
+        present_state <= next_state;
+        if (present_state == data) begin
+            if (bit_counter < 8) begin
+                bit_counter <= bit_counter + 1;
+            end else begin
+                bit_counter <= 0;
+            end
         end
      end
-     
-     //writing the next state logic
-     always @(posedge clk) begin
-        tx <= tx_value;
-            case (present_state) 
-                idle : 
-                    begin
-                        busy  <= 1;
-                        if (tx == 1) begin
-                            next_state <= start;
-                        end else begin
-                            next_state <= present_state;
-                        end
-                    end
-                    
-                 start : 
-                    begin
-                        if(wr_enable == 1) begin
-                            tx <= 0;
-                            next_state <= data;
-                        end
-                     end
-                  
-                  data : 
-                    begin
-                        if (counter < 4'b1000) begin
-                                
-                            tx <= data_in[7 - counter];
-                            counter <= counter + 1;
-                            end else begin
-                                counter <= 0;
-                                next_state <= stop;
-                            end
-                         end
-                     
-                   stop : 
-                    begin
-                        tx <= 1;
-                        next_state <= idle;
-                    end
-                    
-                    default:
-                        begin
-                            next_state <= idle;
-                        end
-                        
-              endcase
-         end
-         
- endmodule
-         
+   end
     
-         
-                  
+  //writing the next state logic  
+   always @(*) begin
+    case (present_state)
+        idle : //
+            begin
+                if (wr_enable == 1'b1) begin
+                
+        
+        
+    
+    
+    
+        
+        
                             
                         
                         
