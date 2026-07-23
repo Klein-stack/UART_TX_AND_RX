@@ -1,27 +1,8 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 06/29/2026 10:15:17 PM
-// Design Name: 
-// Module Name: baud_rate_generator
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
 
 module baud_rate_generator(
     input wire clk,
+    input wire rst,
     output reg tx_enable,
     output reg rx_enable
     );
@@ -31,24 +12,25 @@ module baud_rate_generator(
     
     //TX logic
     
-    always @(posedge clk) begin
+    always @(posedge clk or posedge rst) begin
         tx_enable <= 1'b0;
         rx_enable <= 1'b0;
         
-        if (tx_counter < 5208) begin
-            tx_counter <= tx_counter + 1;
-        end else begin
+        if (tx_counter == 5208) begin
             tx_counter <= 0;
-            tx_enable <= 1'b1; //tx is enabled for exactly one clock cycle
+            tx_enable <= 1'b1;
+        end else begin
+            tx_counter <= tx_counter + 1; //tx is enabled for exactly one clock cycle
         end
         
      //RX LOGIC
      
-        if (rx_counter < 325) begin
-            rx_counter <= rx_counter + 1;
+        if (rx_counter == 325) begin
+           rx_counter <= 0;
+           rx_enable <= 1'b1;
         end else begin
-            rx_counter <= 0;
-            rx_enable <= 1'b1; //rx also enabled for one clock cylce
+            rx_counter <= rx_counter + 1;
+            //rx also enabled for one clock cylce
             
         end
      end

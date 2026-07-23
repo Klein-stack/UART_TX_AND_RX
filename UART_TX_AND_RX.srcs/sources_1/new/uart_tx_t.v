@@ -72,7 +72,7 @@ module uart_tx_t(
          
         data : 
             begin
-                if (bit_counter < 4'b1000   ) begin
+                if (bit_counter == 4'b1000   ) begin
                     next_state = present_state;
                 end else begin
                     next_state = stop;
