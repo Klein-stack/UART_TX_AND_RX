@@ -18,7 +18,7 @@ module uart_tx_t(
         stop = 2'b11;
         
         
-  reg [3:0] bit_counter = 3'b0000;
+  reg [3:0] bit_counter = 4'b0000;
   reg [1:0] present_state;
   reg [1:0] next_state;
   reg [7:0] tx_in;
@@ -28,12 +28,12 @@ module uart_tx_t(
         present_state <= idle;
         bit_counter <= 0;
         tx <= 1'b1;
-        busy <= 0;
+        tx_in <= 8'b0;
     end else begin
         if (present_state == idle && wr_enable) begin
               tx_in <= data_in;
         end
-        present_state <= next_state;
+    present_state <= next_state;
     if (present_state == start) begin
             tx <= 1'b0;
         end 
@@ -41,12 +41,11 @@ module uart_tx_t(
             tx <= 1'b1;
         end
         if (present_state == data) begin
-            if (bit_counter < 8) begin
-                bit_counter <= bit_counter + 1;
-                tx <= tx_in[bit_counter];
+            if (bit_counter == 8) begin
+                 bit_counter <= 0;
             end else begin
-                bit_counter <= 0;
-                tx <= 0;
+                  bit_counter <= bit_counter + 1;
+                  tx <= tx_in[bit_counter];
             end
         end
      end
@@ -55,6 +54,7 @@ module uart_tx_t(
   //writing the next state logic  
    always @(*) begin
     next_state = present_state;
+    busy = (present_state == idle) ? 0 : 1;
     case (present_state)
         idle : //waits for wr_enable to become 1 to start the process
             begin
@@ -72,7 +72,7 @@ module uart_tx_t(
          
         data : 
             begin
-                if (bit_counter < 3'b1000) begin
+                if (bit_counter < 4'b1000   ) begin
                     next_state = present_state;
                 end else begin
                     next_state = stop;
@@ -82,7 +82,7 @@ module uart_tx_t(
          stop:
             begin
                 next_state = idle;
-         end
+            end
          
          default : next_state = idle;
             
