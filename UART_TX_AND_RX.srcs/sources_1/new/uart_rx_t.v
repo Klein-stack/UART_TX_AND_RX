@@ -3,8 +3,8 @@ module uart_rx_t (
     input rst,
     input rx_enable,
     input rx,
-    output data_out,  //the data that is received by the rx
-    output data_valid //signal to verify if the data is received or not
+    output reg data_out,  //the data that is received by the rx
+    output reg data_valid //signal to verify if the data is received or not
     );
     
 localparam [3:0] 
@@ -91,6 +91,11 @@ always @(posedge clk or posedge rst) begin
         end
         
      endcase
+     
+   end
+   
+endmodule
+    
       
         
         
