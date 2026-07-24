@@ -47,12 +47,59 @@ always @(posedge clk or posedge rst) begin
                 bit_counter <= 0;
             end else begin
                 bit_counter <= bit_counter + 1;
-                rx
-                data
+                rx_data[bit_counter] <= rx;
+            
             end
         end
         
         stop : begin
+            if(rx <= 1'b1) begin
+                data_out <= rx_data;
+                data_valid <= 1'b1;
+            end
+        end
+        
+       endcase
+  end
+       
+   //the next state logic    
+  always @(*) begin 
+    next_state = present_state;
+    
+    case (present_state) 
+        
+        idle : begin
+            if (rx == 1'b0) begin
+                next_state = start;
+            end
+        end
+        
+        start : begin
+            next_state = data;
+        end
+        
+        data : begin
+            if (bit_counter == 8) begin
+                next_state = stop;
+            end else begin
+                next_state = present_state;
+            end
+        end
+        
+        stop : begin
+            next_state = idle;
+        end
+        
+     endcase
+      
+        
+        
+            
+            
+        
+    
+    
+            
             
         
         
