@@ -1,6 +1,3 @@
-`timescale 1ns / 1ps
-
-
 module uart_tx_t(
     input clk,
     input wr_enable , //write enable pin. Writing to uart only occurs when this is 1
@@ -27,37 +24,49 @@ module uart_tx_t(
     if (rst) begin
         present_state <= idle;
         bit_counter <= 0;
-        tx <= 1'b1;
         tx_in <= 8'b0;
     end else begin
+    if (tx_enable) begin
+        present_state <= next_state;
         if (present_state == idle && wr_enable) begin
-              tx_in <= data_in;
+            tx_in <= data_in;
         end
-    present_state <= next_state;
-    if (present_state == start) begin
-            tx <= 1'b0;
-        end 
-        if (present_state == stop) begin
-            tx <= 1'b1;
-        end
-        if (present_state == data) begin
-            if (bit_counter == 8) begin
-                 bit_counter <= 0;
-            end else begin
-                  bit_counter <= bit_counter + 1;
-                  tx <= tx_in[bit_counter];
-            end
-        end
+        
+        case (present_state)
+         idle : begin
+                bit_counter <= 0;
+         end
+            
+         start : begin
+                bit_counter <= 0;
+         end
+            
+         data : begin
+                if (bit_counter == 7) begin
+                    bit_counter <= 0;
+                end else begin
+                    bit_counter <= bit_counter + 1;
+                end
+         end
+             
+         stop :  begin
+                bit_counter <= 0;
+         end
+         endcase
      end
-   end
+         
+     end
+  end
     
   //writing the next state logic  
    always @(*) begin
     next_state = present_state;
     busy = (present_state == idle) ? 0 : 1;
+    tx = 1'b1;
     case (present_state)
         idle : //waits for wr_enable to become 1 to start the process
             begin
+                tx = 1'b1;
                 if (wr_enable == 1'b1) begin
                     next_state = start;
                 end else begin 
@@ -67,20 +76,22 @@ module uart_tx_t(
             
         start : 
             begin
+                tx = 1'b0;
                 next_state = data;
             end
          
         data : 
+            
             begin
-                if (bit_counter == 4'b1000   ) begin
-                    next_state = present_state;
-                end else begin
+                 tx = tx_in[bit_counter];
+                 if (bit_counter == 7) begin
                     next_state = stop;
                 end
             end
          
          stop:
             begin
+                tx = 1'b1;
                 next_state = idle;
             end
          
