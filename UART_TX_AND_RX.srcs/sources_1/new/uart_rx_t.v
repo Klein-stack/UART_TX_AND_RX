@@ -3,11 +3,11 @@ module uart_rx_t (
     input rst,
     input rx_enable,
     input rx,
-    output reg data_out,  //the data that is received by the rx
+    output reg [7:0] data_out,  //the data that is received by the rx
     output reg data_valid //signal to verify if the data is received or not
     );
     
-localparam [3:0] 
+localparam [1:0] 
     idle =  2'b00,
     start = 2'b01,
     data = 2'b10,
@@ -20,7 +20,7 @@ reg [3:0] bit_counter;
 reg [7:0] rx_data;
 
 always @(posedge clk or posedge rst) begin
-    if (rst) begin
+    if (rst) begin  
         present_state <= idle;
         bit_counter <= 0;
         rx_data <= 0;
@@ -79,7 +79,7 @@ always @(posedge clk or posedge rst) begin
         end
         
         data : begin
-            if (bit_counter == 8) begin
+            if (bit_counter == 7) begin
                 next_state = stop;
             end else begin
                 next_state = present_state;
